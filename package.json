@@ -1,16 +1,14 @@
 {
   "name": "chatbot-whatsapp",
   "version": "1.0.0",
-  "description": "Chatbot do WhatsApp para atendimento automático",
+  "description": "Bot WhatsApp com whatsapp-web.js",
   "main": "chatbot.js",
   "scripts": {
-    "start": "node chatbot.js"
+    "start": "node server.js && node chatbot.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "MIT",
   "dependencies": {
     "express": "^4.18.2",
-    "venom-bot": "^4.1.5"
+    "qrcode-terminal": "^0.12.0",
+    "whatsapp-web.js": "^1.21.1"
   }
 }
