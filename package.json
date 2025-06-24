@@ -2,9 +2,9 @@
   "name": "chatbot-whatsapp",
   "version": "1.0.0",
   "description": "Chatbot do WhatsApp para atendimento automático",
-  "main": "index.js",
+  "main": "chatbot.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node chatbot.js"
   },
   "keywords": [],
   "author": "",
