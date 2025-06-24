@@ -1,30 +1,25 @@
-const qrcode = require('qrcode-terminal');
-const { Client, MessageMedia, LocalAuth } = require('whatsapp-web.js');
-
-// 👉 CORREÇÃO AQUI: usa LocalAuth para salvar sessão
-const client = new Client({
-    authStrategy: new LocalAuth()
-});
+const { Client, MessageMedia } = require('whatsapp-web.js');
+const client = new Client();
 
 const lastMenu = {};
+const delay = ms => new Promise(res => setTimeout(res, ms));
 
 client.on('qr', qr => {
-    console.log('🟡 Escaneie o QR Code abaixo para conectar ao WhatsApp:\n');
-    qrcode.generate(qr, { small: true });
+    const qrLink = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(qr)}&size=300x300`;
+    console.log(`📲 Escaneie o QR Code para autenticar:\n${qrLink}`);
 });
 
 client.on('ready', () => {
-    console.log('🟢 Tudo certo! WhatsApp conectado.');
+    console.log('✅ Tudo certo! WhatsApp conectado.');
 });
 
 client.initialize();
-
-const delay = ms => new Promise(res => setTimeout(res, ms));
 
 client.on('message', async msg => {
     const body = msg.body.trim().toLowerCase();
     const sender = msg.from;
 
+    // MENU PRINCIPAL
     if (body.match(/^(menu|oi|olá|ola|bom dia|boa tarde|boa noite)$/i) && sender.endsWith('@c.us')) {
         lastMenu[sender] = null;
         const chat = await msg.getChat();
@@ -38,6 +33,7 @@ client.on('message', async msg => {
         return;
     }
 
+    // 2 - Show Dino Fonseca
     if (body === '2' && (!lastMenu[sender] || lastMenu[sender] !== 'conecta')) {
         lastMenu[sender] = 'dino';
         const chat = await msg.getChat();
@@ -49,12 +45,14 @@ client.on('message', async msg => {
         return;
     }
 
+    // Atendimento para Dino Fonseca
     if (lastMenu[sender] === 'dino' && body === '1') {
         await client.sendMessage(sender,
             `👤 Olá! Eu sou *Larissa*, da equipe R5 Shows.\n\nLogo mais estarei respondendo sua dúvida.\nVocê já pode me enviar sua mensagem por aqui! 💬`);
         return;
     }
 
+    // 1 - Conecta Brazil
     if (body === '1' && lastMenu[sender] !== 'conecta') {
         lastMenu[sender] = 'conecta';
         const chat = await msg.getChat();
@@ -66,6 +64,7 @@ client.on('message', async msg => {
         return;
     }
 
+    // Subopções do menu Conecta
     if (lastMenu[sender] === 'conecta') {
         if (body === '1') {
             await client.sendMessage(sender,
